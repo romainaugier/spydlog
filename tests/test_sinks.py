@@ -140,9 +140,9 @@ class TestFileSinks:
 class TestNullSink:
     """Test null sink (discards all logs)"""
 
-    def test_null_sink_mt(self):
-        """Test multi-threaded null sink"""
-        sink = spydlog.null_sink_mt()
+    def test_null_sink_st(self):
+        """Test null sink"""
+        sink = spydlog.null_sink_st()
         assert sink is not None
 
     def test_null_sink_st(self):

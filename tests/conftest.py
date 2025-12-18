@@ -2,17 +2,17 @@ import pytest
 import spydlog
 
 
-@pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True)
 def cleanup_loggers():
     """Cleanup loggers after each test to avoid conflicts"""
     yield
     # Drop all loggers after each test and reset the default
-    # default = spydlog.default_logger()
-    # spydlog.drop_all()
-    # spydlog.set_default_logger(default)
+    spydlog.drop_all()
+    default = spydlog.logger("")
+    spydlog.set_default_logger(default)
 
 
-@pytest.fixture(autouse=True, scope="function")
+@pytest.fixture(autouse=True)
 def reset_global_settings():
     """Reset global logger settings after each test"""
     yield

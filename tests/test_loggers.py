@@ -23,7 +23,7 @@ class TestLoggerCreation:
         """Test creating logger with multiple sinks"""
         sink1 = spydlog.stdout_color_sink_mt()
         sink2 = spydlog.stderr_color_sink_mt()
-        sink3 = spydlog.null_sink_mt()
+        sink3 = spydlog.null_sink_st()
 
         logger = spydlog.logger("multi_sink_logger", [sink1, sink2, sink3])
         assert logger.name() == "multi_sink_logger"

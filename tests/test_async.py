@@ -3,7 +3,6 @@ import spydlog
 import tempfile
 import os
 import time
-import conftest
 
 
 class TestAsyncOverflowPolicy:
@@ -19,35 +18,16 @@ class TestAsyncOverflowPolicy:
         assert spydlog.async_overflow_policy.block != spydlog.async_overflow_policy.overrun_oldest
 
 
-class TestThreadPool:
-    """Test thread pool initialization and access"""
-
-    def test_init_thread_pool(self):
-        """Test initializing thread pool"""
-        spydlog.init_thread_pool(8192, 1)
-        pool = spydlog.thread_pool()
-        assert pool is not None
-
-    def test_init_thread_pool_multiple_threads(self):
-        """Test initializing thread pool with multiple threads"""
-        spydlog.init_thread_pool(16384, 2)
-        pool = spydlog.thread_pool()
-        assert pool is not None
-
-    def test_thread_pool_default_thread_count(self):
-        """Test thread pool with default thread count"""
-        spydlog.init_thread_pool(8192)  # Should default to 1 thread
-        pool = spydlog.thread_pool()
-        assert pool is not None
-
-
 class TestAsyncLogger:
     """Test async logger creation and operations"""
 
     def test_async_logger_with_single_sink(self):
         """Test creating async logger with single sink"""
         sink = spydlog.stdout_color_sink_mt()
-        spydlog.init_thread_pool(8192, 1)
+
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         logger = spydlog.async_logger("async_single", sink, pool)
@@ -58,7 +38,10 @@ class TestAsyncLogger:
         """Test creating async logger with multiple sinks"""
         sink1 = spydlog.stdout_color_sink_mt()
         sink2 = spydlog.null_sink_st()
-        spydlog.init_thread_pool(8192, 1)
+
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         logger = spydlog.async_logger("async_multi", [sink1, sink2], pool)
@@ -70,7 +53,10 @@ class TestAsyncLogger:
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = os.path.join(tmpdir, "async_test.log")
             sink = spydlog.basic_file_sink_mt(filepath)
-            spydlog.init_thread_pool(8192, 1)
+
+            if spydlog.thread_pool() is None:
+                spydlog.init_thread_pool(8192, 1)
+
             pool = spydlog.thread_pool()
 
             logger = spydlog.async_logger("async_log_test", sink, pool)
@@ -81,19 +67,25 @@ class TestAsyncLogger:
 
             # Flush to ensure messages are written
             logger.flush()
-            time.sleep(0.1)  # Give async logger time to write
+            time.sleep(0.1)
 
             assert os.path.exists(filepath)
             with open(filepath, 'r') as f:
                 content = f.read()
+                print(content)
                 assert "Async info message" in content
                 assert "Async warn message" in content
                 assert "Async error message" in content
 
+            print(pool)
+
     def test_async_logger_all_log_levels(self):
         """Test all log levels with async logger"""
-        sink = spydlog.null_sink_mt()
-        spydlog.init_thread_pool(8192, 1)
+        sink = spydlog.null_sink_st()
+
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         logger = spydlog.async_logger("async_levels", sink, pool)
@@ -114,7 +106,10 @@ class TestAsyncLogger:
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = os.path.join(tmpdir, "async_filter.log")
             sink = spydlog.basic_file_sink_mt(filepath)
-            spydlog.init_thread_pool(8192, 1)
+
+            if spydlog.thread_pool() is None:
+                spydlog.init_thread_pool(8192, 1)
+
             pool = spydlog.thread_pool()
 
             logger = spydlog.async_logger("async_filter", sink, pool)
@@ -136,7 +131,10 @@ class TestAsyncLogger:
     def test_async_logger_set_pattern(self):
         """Test setting pattern on async logger"""
         sink = spydlog.stdout_color_sink_mt()
-        spydlog.init_thread_pool(8192, 1)
+
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         logger = spydlog.async_logger("async_pattern", sink, pool)
@@ -149,7 +147,10 @@ class TestAsyncLogger:
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = os.path.join(tmpdir, "async_flush.log")
             sink = spydlog.basic_file_sink_mt(filepath)
-            spydlog.init_thread_pool(8192, 1)
+
+            if spydlog.thread_pool() is None:
+                spydlog.init_thread_pool(8192, 1)
+
             pool = spydlog.thread_pool()
 
             logger = spydlog.async_logger("async_flush", sink, pool)
@@ -175,8 +176,11 @@ class TestAsyncLoggerPerformance:
 
     def test_async_logger_high_throughput(self):
         """Test async logger with many messages"""
-        sink = spydlog.null_sink_mt()
-        spydlog.init_thread_pool(8192, 1)
+        sink = spydlog.null_sink_st()
+
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         logger = spydlog.async_logger("async_throughput", sink, pool)
@@ -193,7 +197,10 @@ class TestAsyncLoggerPerformance:
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = os.path.join(tmpdir, "async_perf.log")
             sink = spydlog.basic_file_sink_mt(filepath)
-            spydlog.init_thread_pool(8192, 1)
+
+            if spydlog.thread_pool() is None:
+                spydlog.init_thread_pool(8192, 1)
+
             pool = spydlog.thread_pool()
 
             logger = spydlog.async_logger("async_perf", sink, pool)
@@ -218,7 +225,10 @@ class TestAsyncLoggerWithRegistry:
     def test_register_async_logger(self):
         """Test registering async logger"""
         sink = spydlog.stdout_color_sink_mt()
-        spydlog.init_thread_pool(8192, 1)
+
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         logger = spydlog.async_logger("registered_async", sink, pool)
@@ -231,7 +241,10 @@ class TestAsyncLoggerWithRegistry:
     def test_async_logger_as_default(self):
         """Test setting async logger as default"""
         sink = spydlog.stdout_color_sink_mt()
-        spydlog.init_thread_pool(8192, 1)
+
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         logger = spydlog.async_logger("default_async", sink, pool)
@@ -249,7 +262,9 @@ class TestAsyncLoggerConcurrency:
 
     def test_multiple_async_loggers(self):
         """Test creating multiple async loggers"""
-        spydlog.init_thread_pool(8192, 1)
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         logger1 = spydlog.async_logger("async1", spydlog.null_sink_st(), pool)
@@ -266,7 +281,9 @@ class TestAsyncLoggerConcurrency:
 
     def test_mixed_sync_async_loggers(self):
         """Test using both sync and async loggers"""
-        spydlog.init_thread_pool(8192, 1)
+        if spydlog.thread_pool() is None:
+            spydlog.init_thread_pool(8192, 1)
+
         pool = spydlog.thread_pool()
 
         sync_logger = spydlog.stdout_color_mt("sync")

@@ -4,7 +4,7 @@
 # Setup the virtual environment (use your target python version)
 python -m venv venv
 source venv/bin/activate # call venv\Scripts\activate on Windows
-pip install scikit-build-core cibuildwheel pytest pytest-cov
+pip install scikit-build-core cibuildwheel pytest pytest-cov # or pip install -r requirements.txt
 
 # Either
 # Build the package

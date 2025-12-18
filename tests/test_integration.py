@@ -160,14 +160,14 @@ class TestRealWorldScenarios:
         """Test async logging for high-throughput scenario"""
         with tempfile.TemporaryDirectory() as tmpdir:
             # Initialize thread pool for async logging
-            spydlog.init_thread_pool(8192, 2)
-            pool = spydlog.thread_pool()
+            if spydlog.thread_pool() is None:
+                spydlog.init_thread_pool(8192, 2)
 
             # Create async logger
             sink = spydlog.basic_file_sink_mt(
                 os.path.join(tmpdir, "async_app.log")
             )
-            logger = spydlog.async_logger("high_throughput", sink, pool)
+            logger = spydlog.async_logger("high_throughput", sink, spydlog.thread_pool())
 
             # Simulate high-throughput logging
             for i in range(1000):
@@ -221,7 +221,7 @@ class TestLevelManagement:
 
     def test_hierarchical_levels(self):
         """Test hierarchical level filtering"""
-        sink = spydlog.null_sink_mt()
+        sink = spydlog.null_sink_st()
         logger = spydlog.logger("hierarchy", sink)
 
         levels = [

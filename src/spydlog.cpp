@@ -2,6 +2,7 @@
 #include "nanobind/stl/string.h"
 #include "nanobind/stl/vector.h"
 #include "nanobind/stl/shared_ptr.h"
+#include "nanobind/stl/function.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/sink.h"
 #include "spdlog/sinks/base_sink.h"
@@ -14,7 +15,9 @@
 #include "spdlog/async.h"
 #include "spdlog/async_logger.h"
 #include "spdlog/common.h"
+
 #include <chrono>
+#include <memory>
 
 namespace nb = nanobind;
 using namespace nb::literals;
@@ -28,13 +31,22 @@ NB_MODULE(spydlog, m) {
         .value("warn", spdlog::level::warn)
         .value("err", spdlog::level::err)
         .value("critical", spdlog::level::critical)
-        .value("off", spdlog::level::off);
+        .value("off", spdlog::level::off)
+        .def("__lt__", [](const spdlog::level::level_enum& self, spdlog::level::level_enum other) { return self < other; })
+        .def("__le__", [](const spdlog::level::level_enum& self, spdlog::level::level_enum other) { return self <= other; })
+        .def("__gt__", [](const spdlog::level::level_enum& self, spdlog::level::level_enum other) { return self > other; })
+        .def("__ge__", [](const spdlog::level::level_enum& self, spdlog::level::level_enum other) { return self >= other; });
 
     // Color mode enum
     nb::enum_<spdlog::color_mode>(m, "color_mode")
         .value("always", spdlog::color_mode::always)
         .value("automatic", spdlog::color_mode::automatic)
         .value("never", spdlog::color_mode::never);
+
+    // Pattern time enum
+    nb::enum_<spdlog::pattern_time_type>(m, "pattern_time_type")
+        .value("local", spdlog::pattern_time_type::local)
+        .value("utc", spdlog::pattern_time_type::utc);
 
     // Sink base class
     nb::class_<spdlog::sinks::sink>(m, "sink")
@@ -126,18 +138,20 @@ NB_MODULE(spydlog, m) {
         .def("set_level", &spdlog::logger::set_level)
         .def("level", &spdlog::logger::level)
         .def("name", &spdlog::logger::name)
-        .def("set_pattern", &spdlog::logger::set_pattern)
+        .def("set_pattern", &spdlog::logger::set_pattern, "pattern"_a, "time_type"_a = spdlog::pattern_time_type::local)
         .def("flush", &spdlog::logger::flush)
         .def("flush_on", &spdlog::logger::flush_on)
-        .def("sinks", [](spdlog::logger& self) { return self.sinks(); })
+        .def("sinks", [](spdlog::logger& self) { return self.sinks(); }, nb::rv_policy::reference_internal)
         .def("should_log", &spdlog::logger::should_log);
 
     // Thread-Pool and Async initialization
     nb::class_<spdlog::details::thread_pool>(m, "_thread_pool")
         .def(nb::init<size_t, size_t>(), "q_max_items"_a, "threads_n"_a);
 
-    m.def("init_thread_pool", [](size_t queue_size, size_t thread_count) { spdlog::init_thread_pool(queue_size, thread_count, []{}, []{}); },
-            "queue_size"_a, "thread_count"_a = 1);
+    m.def("init_thread_pool", [](size_t q_max_items, size_t threads_n) {
+        spdlog::init_thread_pool(q_max_items, threads_n);
+    }, "q_max_items"_a, "threads_n"_a = 1);
+
     m.def("thread_pool", &spdlog::thread_pool);
 
     // Async logger
@@ -157,7 +171,7 @@ NB_MODULE(spydlog, m) {
     m.def("flush_every", [](int milliseconds) {
         spdlog::flush_every(std::chrono::milliseconds(milliseconds));
     }, "milliseconds"_a);
-    m.def("set_pattern", [](const std::string& pattern) { spdlog::set_pattern(pattern); });
+    m.def("set_pattern", &spdlog::set_pattern, "pattern"_a, "time_type"_a = spdlog::pattern_time_type::local);
 
     // Global logging functions
     m.def("trace", [](const std::string& msg) { spdlog::trace(msg); });
