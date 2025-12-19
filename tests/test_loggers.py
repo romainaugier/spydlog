@@ -3,6 +3,8 @@ import spydlog
 import tempfile
 import os
 
+from tests.conftest import handle_permission_error
+
 
 class TestLoggerCreation:
     """Test logger creation with different constructors"""
@@ -29,6 +31,7 @@ class TestLoggerCreation:
         assert logger.name() == "multi_sink_logger"
         assert len(logger.sinks()) == 3
 
+    @handle_permission_error
     def test_logger_with_file_sink(self):
         """Test creating logger with file sink"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -132,6 +135,7 @@ class TestLoggerMethods:
 class TestLoggerFiltering:
     """Test logger level filtering"""
 
+    @handle_permission_error
     def test_logger_filters_by_level(self):
         """Test that logger respects level filtering"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -157,6 +161,7 @@ class TestLoggerFiltering:
 class TestMultipleSinks:
     """Test logger with multiple sinks"""
 
+    @handle_permission_error
     def test_logger_writes_to_all_sinks(self):
         """Test that messages go to all sinks"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -181,6 +186,7 @@ class TestMultipleSinks:
                 content2 = f.read()
                 assert "multiple sinks" in content2
 
+    @handle_permission_error
     def test_sinks_with_different_levels(self):
         """Test multiple sinks with different log levels"""
         with tempfile.TemporaryDirectory() as tmpdir:

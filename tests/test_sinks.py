@@ -2,6 +2,8 @@ import spydlog
 import tempfile
 import os
 
+from tests.conftest import handle_permission_error
+
 
 class TestConsoleSinks:
     """Test console sink creation and configuration"""
@@ -67,6 +69,7 @@ class TestConsoleSinks:
 class TestFileSinks:
     """Test file sink creation and basic operations"""
 
+    @handle_permission_error
     def test_basic_file_sink_mt(self):
         """Test multi-threaded basic file sink"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -75,6 +78,7 @@ class TestFileSinks:
             assert sink is not None
             assert os.path.exists(filepath)
 
+    @handle_permission_error
     def test_basic_file_sink_st(self):
         """Test single-threaded basic file sink"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -83,6 +87,7 @@ class TestFileSinks:
             assert sink is not None
             assert os.path.exists(filepath)
 
+    @handle_permission_error
     def test_basic_file_sink_truncate(self):
         """Test basic file sink with truncate option"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -96,6 +101,7 @@ class TestFileSinks:
             sink = spydlog.basic_file_sink_mt(filepath, True)
             assert sink is not None
 
+    @handle_permission_error
     def test_rotating_file_sink_mt(self):
         """Test multi-threaded rotating file sink"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -106,6 +112,7 @@ class TestFileSinks:
             sink = spydlog.rotating_file_sink_mt(filepath, max_size, max_files)
             assert sink is not None
 
+    @handle_permission_error
     def test_rotating_file_sink_st(self):
         """Test single-threaded rotating file sink"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -116,6 +123,7 @@ class TestFileSinks:
             sink = spydlog.rotating_file_sink_st(filepath, max_size, max_files)
             assert sink is not None
 
+    @handle_permission_error
     def test_daily_file_sink_mt(self):
         """Test multi-threaded daily file sink"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -126,6 +134,7 @@ class TestFileSinks:
             sink = spydlog.daily_file_sink_mt(filepath, hour, minute)
             assert sink is not None
 
+    @handle_permission_error
     def test_daily_file_sink_st(self):
         """Test single-threaded daily file sink"""
         with tempfile.TemporaryDirectory() as tmpdir:

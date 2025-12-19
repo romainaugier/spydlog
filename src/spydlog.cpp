@@ -3,6 +3,7 @@
 #include "nanobind/stl/vector.h"
 #include "nanobind/stl/shared_ptr.h"
 #include "nanobind/stl/function.h"
+
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/sink.h"
 #include "spdlog/sinks/base_sink.h"
@@ -21,6 +22,9 @@
 
 namespace nb = nanobind;
 using namespace nb::literals;
+
+static spdlog::details::thread_pool g_thread_pool(spdlog::details::default_async_q_size, 1);
+static std::shared_ptr<spdlog::details::thread_pool> g_thread_pool_ptr{ &g_thread_pool, [](spdlog::details::thread_pool*){} };
 
 NB_MODULE(spydlog, m) {
     // Log level enum
@@ -144,25 +148,17 @@ NB_MODULE(spydlog, m) {
         .def("sinks", [](spdlog::logger& self) { return self.sinks(); }, nb::rv_policy::reference_internal)
         .def("should_log", &spdlog::logger::should_log);
 
-    // Thread-Pool and Async initialization
-    nb::class_<spdlog::details::thread_pool>(m, "_thread_pool")
-        .def(nb::init<size_t, size_t>(), "q_max_items"_a, "threads_n"_a);
-
-    m.def("init_thread_pool", [](size_t q_max_items, size_t threads_n) {
-        spdlog::init_thread_pool(q_max_items, threads_n);
-    }, "q_max_items"_a, "threads_n"_a = 1);
-
-    m.def("thread_pool", &spdlog::thread_pool);
-
     // Async logger
-    nb::class_<spdlog::async_logger, spdlog::logger>(m, "async_logger")
-        .def(nb::init<const std::string&, spdlog::sink_ptr, std::shared_ptr<spdlog::details::thread_pool>>(),
-             "name"_a, "sink"_a, "thread_pool"_a)
-        .def("__init__", [](spdlog::async_logger* logger, const std::string& name,
-                            const std::vector<spdlog::sink_ptr>& sinks,
-                            std::shared_ptr<spdlog::details::thread_pool> tp) {
-            new (logger) spdlog::async_logger(name, sinks.begin(), sinks.end(), tp, spdlog::async_overflow_policy::block);
-        }, "name"_a, "sinks"_a, "thread_pool"_a);
+    nb::class_<spdlog::async_logger, spdlog::logger>(m, "_async_logger");
+
+    m.def("async_logger", [](const std::string& name, spdlog::sink_ptr& sink) {
+        return std::make_shared<spdlog::async_logger>(name, sink, g_thread_pool_ptr, spdlog::async_overflow_policy::block);
+    }, "name"_a, "sink"_a);
+
+    m.def("async_logger", [](const std::string& name,
+                             const std::vector<spdlog::sink_ptr>& sinks) {
+        return std::make_shared<spdlog::async_logger>(name, sinks.begin(), sinks.end(), g_thread_pool_ptr, spdlog::async_overflow_policy::block);
+    }, "name"_a, "sinks"_a);
 
     // Global logger functions
     m.def("set_level", &spdlog::set_level);

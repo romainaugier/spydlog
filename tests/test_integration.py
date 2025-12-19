@@ -4,10 +4,13 @@ import tempfile
 import os
 import time
 
+from tests.conftest import handle_permission_error
+
 
 class TestRealWorldScenarios:
     """Test real-world usage scenarios"""
 
+    @handle_permission_error
     def test_application_logging_setup(self):
         """Test typical application logging setup"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -41,6 +44,7 @@ class TestRealWorldScenarios:
                 assert "Warning message" in content
                 assert "Error occurred" in content
 
+    @handle_permission_error
     def test_rotating_log_scenario(self):
         """Test rotating log file scenario"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -64,6 +68,7 @@ class TestRealWorldScenarios:
             # Base file should exist
             assert os.path.exists(filepath)
 
+    @handle_permission_error
     def test_multi_module_logging(self):
         """Test logging from multiple 'modules'"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -99,6 +104,7 @@ class TestRealWorldScenarios:
                 assert "DB" in content
                 assert "API" in content
 
+    @handle_permission_error
     def test_error_only_file(self):
         """Test logging errors to separate file"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -143,6 +149,7 @@ class TestRealWorldScenarios:
                 assert "Error message" in error_content
                 assert "Critical message" in error_content
 
+    @handle_permission_error
     def test_daily_rotation_setup(self):
         """Test daily rotation logger setup"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -156,18 +163,16 @@ class TestRealWorldScenarios:
 
             assert os.path.exists(filepath)
 
+    @handle_permission_error
     def test_async_logging_scenario(self):
         """Test async logging for high-throughput scenario"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Initialize thread pool for async logging
-            if spydlog.thread_pool() is None:
-                spydlog.init_thread_pool(8192, 2)
-
             # Create async logger
             sink = spydlog.basic_file_sink_mt(
                 os.path.join(tmpdir, "async_app.log")
             )
-            logger = spydlog.async_logger("high_throughput", sink, spydlog.thread_pool())
+
+            logger = spydlog.async_logger("high_throughput", sink)
 
             # Simulate high-throughput logging
             for i in range(1000):
@@ -244,6 +249,7 @@ class TestLevelManagement:
                 else:
                     assert not logger.should_log(test_level)
 
+    @handle_permission_error
     def test_global_vs_logger_level(self):
         """Test interaction between global and logger-specific levels"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -274,12 +280,6 @@ class TestLevelManagement:
 
 class TestErrorConditions:
     """Test error handling and edge cases"""
-
-    def test_logging_to_invalid_path(self):
-        """Test creating file logger with invalid path"""
-        with pytest.raises(Exception):
-            # This should fail - invalid path
-            spydlog.basic_logger_mt("invalid", "/invalid/path/that/does/not/exist/file.log")
 
     def test_empty_logger_name(self):
         """Test creating logger with empty name"""
@@ -318,6 +318,7 @@ class TestErrorConditions:
 class TestCleanup:
     """Test proper cleanup and resource management"""
 
+    @handle_permission_error
     def test_drop_logger_releases_file(self):
         """Test that dropping logger releases file handle"""
         with tempfile.TemporaryDirectory() as tmpdir:

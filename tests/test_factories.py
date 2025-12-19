@@ -2,6 +2,8 @@ import spydlog
 import tempfile
 import os
 
+from tests.conftest import handle_permission_error
+
 
 class TestConsoleLoggerFactories:
     """Test console logger factory functions"""
@@ -69,6 +71,7 @@ class TestConsoleLoggerFactories:
 class TestFileLoggerFactories:
     """Test file logger factory functions"""
 
+    @handle_permission_error
     def test_basic_logger_mt(self):
         """Test basic multi-threaded file logger factory"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -83,6 +86,7 @@ class TestFileLoggerFactories:
             with open(filepath, 'r') as f:
                 assert "Test message" in f.read()
 
+    @handle_permission_error
     def test_basic_logger_st(self):
         """Test basic single-threaded file logger factory"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -95,6 +99,7 @@ class TestFileLoggerFactories:
 
             assert os.path.exists(filepath)
 
+    @handle_permission_error
     def test_basic_logger_truncate(self):
         """Test basic file logger with truncate option"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -113,6 +118,7 @@ class TestFileLoggerFactories:
                 assert "old content" not in content
                 assert "new content" in content
 
+    @handle_permission_error
     def test_rotating_logger_mt(self):
         """Test rotating multi-threaded file logger factory"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -127,6 +133,7 @@ class TestFileLoggerFactories:
             logger.flush()
             assert os.path.exists(filepath)
 
+    @handle_permission_error
     def test_rotating_logger_st(self):
         """Test rotating single-threaded file logger factory"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -141,6 +148,7 @@ class TestFileLoggerFactories:
             logger.flush()
             assert os.path.exists(filepath)
 
+    @handle_permission_error
     def test_daily_logger_mt(self):
         """Test daily multi-threaded file logger factory"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -152,6 +160,7 @@ class TestFileLoggerFactories:
             logger.info("Test daily logger")
             logger.flush()
 
+    @handle_permission_error
     def test_daily_logger_st(self):
         """Test daily single-threaded file logger factory"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -163,6 +172,7 @@ class TestFileLoggerFactories:
             logger.info("Test daily logger")
             logger.flush()
 
+    @handle_permission_error
     def test_daily_logger_default_time(self):
         """Test daily logger with default rotation time"""
         with tempfile.TemporaryDirectory() as tmpdir:

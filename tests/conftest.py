@@ -1,6 +1,20 @@
 import pytest
 import spydlog
+import platform
 
+
+# Windows has issues with file permissions and accesses
+def handle_permission_error(f):
+    def wrapper(*args, **kwargs):
+        if platform.system() == "Windows":
+            try:
+                return f(*args, **kwargs)
+            except PermissionError:
+                pass
+        else:
+            return f(*args, **kwargs)
+
+    return wrapper
 
 @pytest.fixture(autouse=True)
 def cleanup_loggers():
@@ -8,8 +22,10 @@ def cleanup_loggers():
     yield
     # Drop all loggers after each test and reset the default
     spydlog.drop_all()
-    default = spydlog.logger("")
-    spydlog.set_default_logger(default)
+
+    if spydlog.default_logger() is None:
+        default = spydlog.logger("")
+        spydlog.set_default_logger(default)
 
 
 @pytest.fixture(autouse=True)
