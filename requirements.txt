@@ -2,3 +2,4 @@ scikit-build-core
 cibuildwheel
 pytest
 pytest-cov
+build
