@@ -72,10 +72,9 @@ class TestRealWorldScenarios:
     def test_multi_module_logging(self):
         """Test logging from multiple 'modules'"""
         with tempfile.TemporaryDirectory() as tmpdir:
+            log_path = os.path.join(tmpdir, "multi_module.log")
             # Shared sink
-            file_sink = spydlog.basic_file_sink_mt(
-                os.path.join(tmpdir, "multi_module.log")
-            )
+            file_sink = spydlog.basic_file_sink_mt(log_path)
 
             # Create loggers for different modules
             auth_logger = spydlog.logger("auth", file_sink)
@@ -97,8 +96,7 @@ class TestRealWorldScenarios:
             api_logger.flush()
 
             # Verify all messages in file
-            log_file = os.path.join(tmpdir, "multi_module.log")
-            with open(log_file, 'r') as f:
+            with open(log_path, 'r') as f:
                 content = f.read()
                 assert "AUTH" in content
                 assert "DB" in content
@@ -160,6 +158,7 @@ class TestRealWorldScenarios:
 
             logger.info("Daily log message")
             logger.flush()
+            time.sleep(0.1)
 
             assert os.path.exists(filepath)
 

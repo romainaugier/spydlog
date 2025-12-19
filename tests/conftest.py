@@ -11,6 +11,8 @@ def handle_permission_error(f):
                 return f(*args, **kwargs)
             except PermissionError:
                 pass
+            except NotADirectoryError:
+                pass
         else:
             return f(*args, **kwargs)
 
