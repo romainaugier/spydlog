@@ -4,7 +4,7 @@ Python bindings for [spdlog](https://github.com/gabime/spdlog) using [nanobind](
 
 ## Installation
 
-Supported Python versions ranges from 3.8 up to the latest (3.14). Supported platforms are Windows, Linux and MacOs.
+Supported Python versions ranges from 3.9 (minimum version) up to the latest (3.14). Supported platforms are Windows, Linux and MacOs.
 
 ```bash
 pip install spydlog

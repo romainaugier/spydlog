@@ -10,7 +10,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(target_options)
 
 # options
-option(SANITIZE "Build with sanitizer" ON)
+option(SANITIZE "Build with sanitizer" OFF)
 
 # python
 if(CMAKE_VERSION VERSION_LESS 3.18)
