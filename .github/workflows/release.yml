@@ -27,6 +27,12 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: Set up QEMU for ARM64 builds
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -39,13 +45,16 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*
-          CIBW_SKIP: "*-musllinux_* cp314-macosx_* cp314-win*"
+          CIBW_SKIP: "*-musllinux_* cp314-macosx_* cp314-win* cp314-*_aarch64"
           CIBW_ENVIRONMENT_LINUX: "CC=gcc CXX=g++"
           CIBW_ENVIRONMENT_MACOS: "CC=clang CXX=clang++"
           CIBW_BEFORE_BUILD: pip install -r requirements.txt
           CIBW_ARCHS_LINUX: x86_64 aarch64
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_ARCHS_WINDOWS: AMD64
+          CIBW_BUILD_VERBOSITY: 1
+          # set to 10.13+ for C++17 aligned allocation in nanobind
+          MACOSX_DEPLOYMENT_TARGET: "10.13"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
