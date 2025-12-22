@@ -207,6 +207,10 @@ class daily_file_sink_mt(sink):
         """
         ...
 
+    def filename(self) -> str:
+        """Get the current log file name"""
+        ...
+
 class daily_file_sink_st(sink):
     """Single-threaded daily file sink."""
 
@@ -219,6 +223,10 @@ class daily_file_sink_st(sink):
             hour: Hour at which to rotate (0-23, default: 0)
             minute: Minute at which to rotate (0-59, default: 0)
         """
+        ...
+
+    def filename(self) -> str:
+        """Get the current log file name"""
         ...
 
 class null_sink_st(sink):
@@ -325,6 +333,10 @@ class logger:
         Returns:
             True if the logger would log at this level
         """
+        ...
+
+    def clone(self) -> logger:
+        """Returns a clone of the logger"""
         ...
 
 # Type aliases for clarity

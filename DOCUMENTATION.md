@@ -710,6 +710,7 @@ logger(name: str, sink: Optional[sink] = None, sinks: Optional[List[sink]] = Non
 - `flush_on(lvl: level)`: Auto-flush at level
 - `sinks() -> List[sink]`: Get attached sinks
 - `should_log(lvl: level) -> bool`: Check if level would be logged
+- `clone() -> logger)`: Returns a clone of the logger
 
 #### `sink`
 

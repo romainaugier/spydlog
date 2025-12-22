@@ -94,11 +94,13 @@ NB_MODULE(spydlog, m) {
     // Basic file sink
     nb::class_<spdlog::sinks::basic_file_sink_mt, spdlog::sinks::sink>(m, "basic_file_sink_mt")
         .def(nb::init<const std::string&, bool>(),
-             "filename"_a, "truncate"_a = false);
+             "filename"_a, "truncate"_a = false)
+        .def("filename", &spdlog::sinks::basic_file_sink_mt::filename);
 
     nb::class_<spdlog::sinks::basic_file_sink_st, spdlog::sinks::sink>(m, "basic_file_sink_st")
         .def(nb::init<const std::string&, bool>(),
-             "filename"_a, "truncate"_a = false);
+             "filename"_a, "truncate"_a = false)
+        .def("filename", &spdlog::sinks::basic_file_sink_st::filename);
 
     // Rotating file sink
     nb::class_<spdlog::sinks::rotating_file_sink_mt, spdlog::sinks::sink>(m, "rotating_file_sink_mt")
@@ -112,11 +114,13 @@ NB_MODULE(spydlog, m) {
     // Daily file sink
     nb::class_<spdlog::sinks::daily_file_sink_mt, spdlog::sinks::sink>(m, "daily_file_sink_mt")
         .def(nb::init<const std::string&, int, int>(),
-             "filename"_a, "hour"_a = 0, "minute"_a = 0);
+             "filename"_a, "hour"_a = 0, "minute"_a = 0)
+        .def("filename", [](spdlog::sinks::daily_file_sink_mt& self) {return self.filename(); });
 
     nb::class_<spdlog::sinks::daily_file_sink_st, spdlog::sinks::sink>(m, "daily_file_sink_st")
         .def(nb::init<const std::string&, int, int>(),
-             "filename"_a, "hour"_a = 0, "minute"_a = 0);
+             "filename"_a, "hour"_a = 0, "minute"_a = 0)
+    .def("filename", [](spdlog::sinks::daily_file_sink_st& self) {return self.filename(); });
 
     // Null sink (no need to register null_sink_mt since they are the same sink)
     nb::class_<spdlog::sinks::null_sink_st, spdlog::sinks::sink>(m, "null_sink_st")
@@ -146,7 +150,8 @@ NB_MODULE(spydlog, m) {
         .def("flush", &spdlog::logger::flush)
         .def("flush_on", &spdlog::logger::flush_on)
         .def("sinks", [](spdlog::logger& self) { return self.sinks(); }, nb::rv_policy::reference_internal)
-        .def("should_log", &spdlog::logger::should_log);
+        .def("should_log", &spdlog::logger::should_log)
+        .def("clone", &spdlog::logger::clone);
 
     // Async logger
     nb::class_<spdlog::async_logger, spdlog::logger>(m, "_async_logger");

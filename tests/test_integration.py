@@ -73,18 +73,17 @@ class TestRealWorldScenarios:
         """Test logging from multiple 'modules'"""
         with tempfile.TemporaryDirectory() as tmpdir:
             log_path = os.path.join(tmpdir, "multi_module.log")
+
             # Shared sink
             file_sink = spydlog.basic_file_sink_mt(log_path)
 
             # Create loggers for different modules
             auth_logger = spydlog.logger("auth", file_sink)
-            db_logger = spydlog.logger("database", file_sink)
-            api_logger = spydlog.logger("api", file_sink)
+            db_logger = auth_logger.clone("database")
+            api_logger = auth_logger.clone("api")
 
             # Set different patterns
-            auth_logger.set_pattern("[%H:%M:%S] [AUTH] %v")
-            db_logger.set_pattern("[%H:%M:%S] [DB] %v")
-            api_logger.set_pattern("[%H:%M:%S] [API] %v")
+            auth_logger.set_pattern("[%H:%M:%S] [%n] %v")
 
             # Log from each module
             auth_logger.info("User login attempt")
@@ -98,9 +97,9 @@ class TestRealWorldScenarios:
             # Verify all messages in file
             with open(log_path, 'r') as f:
                 content = f.read()
-                assert "AUTH" in content
-                assert "DB" in content
-                assert "API" in content
+                assert "auth" in content
+                assert "database" in content
+                assert "api" in content
 
     @handle_permission_error
     def test_error_only_file(self):
@@ -156,11 +155,13 @@ class TestRealWorldScenarios:
             # Rotate at 2:30 AM
             logger = spydlog.daily_logger_mt("daily_app", filepath, 2, 30)
 
+            filename = logger.sinks()[0].filename()
+
             logger.info("Daily log message")
             logger.flush()
             time.sleep(0.1)
 
-            assert os.path.exists(filepath)
+            assert os.path.exists(filename)
 
     @handle_permission_error
     def test_async_logging_scenario(self):
