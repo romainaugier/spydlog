@@ -57,7 +57,9 @@ jobs:
           CIBW_ENVIRONMENT_LINUX: "CC=gcc CXX=g++"
           CIBW_ENVIRONMENT_MACOS: "CC=clang CXX=clang++"
           CIBW_BEFORE_BUILD: pip install -r requirements.txt
-          CIBW_ARCHS_LINUX: x86_64 aarch64
+          # remove aarch64 from Linux for now, takes too much time to build
+          # CIBW_ARCHS_LINUX: x86_64 aarch64
+          CIBW_ARCHS_LINUX: x86_64
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_ARCHS_WINDOWS: AMD64
           CIBW_BUILD_VERBOSITY: 1
