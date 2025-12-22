@@ -19,9 +19,7 @@ function(set_target_options target_name)
         set(COMPILE_OPTIONS -D_FORTIFY_SOURCE=2 -pipe -Wall -pedantic-errors $<$<CONFIG:Release,RelWithDebInfo>:-O3>)
 
         if(IS_ARM)
-            list(APPEND COMPILE_OPTIONS -mcpu=apple-m1)
             if(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-                # Apple Silicon NEON optimizations are enabled by default with -mcpu=apple-m1
             else()
                 # For non-Apple ARM (Linux ARM64), enable NEON
                 list(APPEND COMPILE_OPTIONS -march=armv8-a+fp+simd)
