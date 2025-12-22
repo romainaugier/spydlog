@@ -5,12 +5,12 @@ Python bindings for [spdlog](https://github.com/gabime/spdlog) using [nanobind](
 [![CI](https://github.com/romainaugier/spydlog/workflows/CI/badge.svg)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/romainaugier/spydlog/branch/main/graph/badge.svg)](https://codecov.io/gh/romainaugier/spydlog)
 
-[![3.9](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.9)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
-[![3.10](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.10)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
-[![3.11](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.11)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
-[![3.12](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.12)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
-[![3.13](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.13)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
-[![3.14](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.14)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
+[![3.9](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.9)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml?label=3.9)
+[![3.10](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.10)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml?label=3.10)
+[![3.11](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.11)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml?label=3.11)
+[![3.12](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.12)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml?label=3.12)
+[![3.13](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.13)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml?label=3.13)
+[![3.14](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml/badge.svg?event=push&python-version=3.14)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml?label=3.14)
 
 [![Linux](https://img.shields.io/badge/platform-Linux-blue.svg)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
 [![macOS](https://img.shields.io/badge/platform-macOS-blue.svg)](https://github.com/romainaugier/spydlog/actions/workflows/ci.yml)
