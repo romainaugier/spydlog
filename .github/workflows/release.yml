@@ -27,6 +27,14 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: Set version from tag
+        if: github.event_name == 'release'
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${VERSION#v}
+          echo "SETUPTOOLS_SCM_PRETEND_VERSION=${VERSION}" >> $GITHUB_ENV
+        shell: bash
+
       - name: Set up QEMU for ARM64 builds
         if: runner.os == 'Linux'
         uses: docker/setup-qemu-action@v3
