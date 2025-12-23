@@ -16,13 +16,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
-        exclude:
-          # Python 3.14 might not be available yet on all platforms
-          # Remove these exclusions once 3.14 is stable
-          - os: macos-latest
-            python-version: '3.14'
-          - os: windows-latest
-            python-version: '3.14'
 
     steps:
     - name: Checkout code

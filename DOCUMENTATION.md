@@ -21,7 +21,7 @@
 
 ## Installation
 
-spydlog is supported on Python 3.8 up to the latest version (3.14). It is available on Windows, Linux and MacOS.
+spydlog is supported on Python 3.9 up to the latest version (3.14). It is available on Windows, Linux and MacOS.
 
 ```bash
 pip install spydlog
@@ -354,7 +354,7 @@ spydlog uses a pattern string to format log messages. Common pattern flags:
 | `%n` | Logger name | "my_logger" |
 | `%l` | Log level (short) | "I", "W", "E" |
 | `%L` | Log level (full) | "info", "warning" |
-| `%Y` | Year (4 digits) | "2024" |
+| `%Y` | Year (4 digits) | "2025" |
 | `%m` | Month (01-12) | "03" |
 | `%d` | Day (01-31) | "15" |
 | `%H` | Hour (00-23) | "14" |
@@ -367,8 +367,8 @@ spydlog uses a pattern string to format log messages. Common pattern flags:
 | `%A` | Weekday (full) | "Monday" |
 | `%b` | Month (short) | "Mar" |
 | `%B` | Month (full) | "March" |
-| `%c` | Date and time | "Mon Mar 15 14:30:45 2024" |
-| `%+` | ISO 8601 format | "2024-03-15T14:30:45.123" |
+| `%c` | Date and time | "Mon Mar 15 14:30:45 2025" |
+| `%+` | ISO 8601 format | "2025-03-15T14:30:45.123" |
 
 ### Setting Patterns
 
@@ -399,7 +399,7 @@ logger.set_pattern("[%H:%M:%S] %v")
 
 # Detailed format
 logger.set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%n] [%l] %v")
-# Output: [2024-03-15 14:30:45.123] [my_logger] [info] Log message
+# Output: [2025-12-21 14:30:45.123] [my_logger] [info] Log message
 
 # With thread ID
 logger.set_pattern("[%H:%M:%S.%e] [thread %t] %v")
@@ -407,7 +407,7 @@ logger.set_pattern("[%H:%M:%S.%e] [thread %t] %v")
 
 # ISO 8601 format
 logger.set_pattern("%+")
-# Output: 2024-03-15T14:30:45.123
+# Output: 2025-12-21T14:30:45.123
 
 # Color emphasis for level
 logger.set_pattern("[%H:%M:%S] [%^%l%$] %v")
@@ -710,7 +710,7 @@ logger(name: str, sink: Optional[sink] = None, sinks: Optional[List[sink]] = Non
 - `flush_on(lvl: level)`: Auto-flush at level
 - `sinks() -> List[sink]`: Get attached sinks
 - `should_log(lvl: level) -> bool`: Check if level would be logged
-- `clone() -> logger)`: Returns a clone of the logger
+- `clone() -> logger`: Returns a clone of the logger
 
 #### `sink`
 
