@@ -11,3 +11,6 @@ dist
 
 # Python testing
 .pytest_cache
+
+# Default version file
+_version.py
